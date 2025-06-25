@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dendroloji Çalışma Sitesi</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4ade80">
+</head>
+<body>
+    <!-- Ana Menü -->
+    <div id="main-menu" class="screen active">
+        <div class="container">
+            <header class="header">
+                <div class="logo">
+                    <i class="fas fa-tree"></i>
+                    <h1>Dendroloji Çalışma</h1>
+                </div>
+                <p class="subtitle">Orman Endüstrisi Mühendisliği Öğrencileri İçin</p>
+            </header>
+
+            <div class="menu-buttons">
+                <button class="menu-btn primary" onclick="startGame()">
+                    <i class="fas fa-play"></i>
+                    <span>Oyuna Başla</span>
+                </button>
+                
+                <button class="menu-btn" onclick="showAllTrees()">
+                    <i class="fas fa-images"></i>
+                    <span>Mevcut Ağaçlar</span>
+                </button>
+                
+                <button class="menu-btn" onclick="showWeaknesses()">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Eksiklerim</span>
+                </button>
+                
+                <button class="menu-btn danger" onclick="resetStats()">
+                    <i class="fas fa-trash"></i>
+                    <span>İstatistikleri Sıfırla</span>
+                </button>
+            </div>
+
+            <div class="upload-section">
+                <p class="upload-text">37 varsayılan ağaç hazır! İsterseniz ek ağaç resimleri yükleyebilirsiniz:</p>
+                <input type="file" id="imageUpload" multiple accept="image/*" onchange="handleImageUpload(event)">
+                <label for="imageUpload" class="upload-btn">
+                    <i class="fas fa-upload"></i>
+                    Ek Resim Yükle
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Oyun Ekranı -->
+    <div id="game-screen" class="screen">
+        <div class="container">
+            <div class="game-header">
+                <button class="back-btn" onclick="goToMainMenu()">
+                    <i class="fas fa-arrow-left"></i>
+                    Ana Menü
+                </button>
+                <div class="progress-info">
+                    <span id="current-tree">1</span> / <span id="total-trees">0</span>
+                </div>
+            </div>
+
+            <div class="game-content">
+                <div class="tree-display">
+                    <img id="tree-image" src="" alt="Ağaç resmi">
+                </div>
+
+                <div class="answer-section">
+                    <input type="text" id="answer-input" placeholder="Ağacın adını yazın..." autocomplete="off">
+                    <div class="game-buttons">
+                        <button id="submit-btn" onclick="submitAnswer()">
+                            <i class="fas fa-check"></i>
+                            Gönder
+                        </button>
+                        <button id="skip-btn" onclick="skipTree()">
+                            <i class="fas fa-forward"></i>
+                            Atla
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sonuç Ekranı -->
+    <div id="result-screen" class="screen">
+        <div class="container">
+            <div class="result-content">
+                <h2>Oyun Tamamlandı!</h2>
+                
+                <div class="score-display">
+                    <div class="score-circle">
+                        <span id="final-score">0</span>
+                        <small>/100</small>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item correct">
+                        <i class="fas fa-check"></i>
+                        <span>Doğru</span>
+                        <strong id="correct-count">0</strong>
+                    </div>
+                    <div class="stat-item wrong">
+                        <i class="fas fa-times"></i>
+                        <span>Yanlış</span>
+                        <strong id="wrong-count">0</strong>
+                    </div>
+                    <div class="stat-item skipped">
+                        <i class="fas fa-forward"></i>
+                        <span>Atlandı</span>
+                        <strong id="skipped-count">0</strong>
+                    </div>
+                </div>
+
+                <div class="mistakes-section">
+                    <h3>Yanlış Cevaplar</h3>
+                    <div id="mistakes-list"></div>
+                </div>
+
+                <div class="result-buttons">
+                    <button class="menu-btn primary" onclick="startGame()">
+                        <i class="fas fa-redo"></i>
+                        Yeniden Oyna
+                    </button>
+                    <button class="menu-btn" onclick="goToMainMenu()">
+                        <i class="fas fa-home"></i>
+                        Ana Menü
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mevcut Ağaçlar Ekranı -->
+    <div id="trees-screen" class="screen">
+        <div class="container">
+            <div class="screen-header">
+                <button class="back-btn" onclick="goToMainMenu()">
+                    <i class="fas fa-arrow-left"></i>
+                    Ana Menü
+                </button>
+                <h2>Mevcut Ağaçlar</h2>
+            </div>
+
+            <div id="trees-grid" class="trees-grid">
+                <!-- Ağaçlar buraya yüklenecek -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Eksikler Ekranı -->
+    <div id="weaknesses-screen" class="screen">
+        <div class="container">
+            <div class="screen-header">
+                <button class="back-btn" onclick="goToMainMenu()">
+                    <i class="fas fa-arrow-left"></i>
+                    Ana Menü
+                </button>
+                <h2>Eksikleriniz</h2>
+            </div>
+
+            <div id="weaknesses-list" class="weaknesses-list">
+                <!-- Eksikler buraya yüklenecek -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Not Modal -->
+    <div id="note-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Not Ekle/Düzenle</h3>
+                <button class="close-btn" onclick="closeNoteModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea id="note-text" placeholder="Notunuzu yazın..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="menu-btn" onclick="closeNoteModal()">İptal</button>
+                <button class="menu-btn primary" onclick="saveNote()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Onay Modal -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Onay</h3>
+            </div>
+            <div class="modal-body">
+                <p id="confirm-message"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="menu-btn" onclick="closeConfirmModal()">İptal</button>
+                <button class="menu-btn danger" onclick="confirmAction()">Evet</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
